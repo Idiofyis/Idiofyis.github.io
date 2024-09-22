@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <style>
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        ul li {
+            position: relative;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .folder::before {
+            content: "📂"; /* Folder Icon */
+            margin-right: 10px;
+        }
+        .file::before {
+            content: "📄"; /* File Icon */
+            margin-right: 10px;
+        }
+        .nested {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Library!</h1>
+<h3>Like a regular library but... you don't have to return the books... because it's online...</h3>
+<ul id="fileTree"></ul>
+
+<script>
+    // GitHub API endpoint to fetch contents of the "library" folder
+    const apiUrl = 'https://api.github.com/repos/Idiofyis/Library/contents/library';
+
+    // Function to create a file tree
+    async function createFileTree(url, parentElement) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (Array.isArray(data)) {
+                const ul = document.createElement('ul');
+
+                data.forEach(item => {
+                    const li = document.createElement('li');
+
+                    if (item.type === 'dir') { // If the item is a folder
+                        li.textContent = item.name;
+                        li.classList.add('folder');
+
+                        // Add an empty sublist that will be filled when the folder is clicked
+                        const nestedUl = document.createElement('ul');
+                        nestedUl.classList.add('nested');
+                        li.appendChild(nestedUl);
+
+                        // Set up event listener to fetch folder contents on click
+                        li.addEventListener('click', (event) => {
+                            event.stopPropagation(); // Prevent parent folders from toggling
+
+                            if (nestedUl.children.length === 0) {
+                                createFileTree(item.url, nestedUl);
+                            }
+                            nestedUl.style.display = nestedUl.style.display === 'block' ? 'none' : 'block';
+                        });
+                    } else if (item.type === 'file') { // If the item is a file
+                        const a = document.createElement('a');
+                        a.href = item.download_url; // Link to raw file on GitHub
+                        a.textContent = item.name;
+                        a.classList.add('file');
+                        li.appendChild(a);
+                    }
+
+                    ul.appendChild(li);
+                });
+
+                parentElement.appendChild(ul);
+            } else {
+                console.error('Error fetching directory contents:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching data from GitHub:', error);
+        }
+    }
+
+    // Start building the file tree on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileTree = document.getElementById('fileTree');
+        createFileTree(apiUrl, fileTree);
+    });
+</script>
+</body>
+</html>
+
