@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <h6><a href="index.html">Home</a> </h6>
+    <h1>Essays!</h1>
+
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+
+    const apiUrl = 'https://api.github.com/repos/Idiofyis/Idiofyis.github.io/essays';
+
+    async function createFileTree(url, parentElement) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (Array.isArray(data)) {
+                const ul = document.createElement('ul');
+
+                data.forEach(item => {
+                    const li = document.createElement('li');
+
+                    if (item.type === 'dir') { // If the item is a folder
+                        li.textContent = item.name;
+                        li.classList.add('folder');
+
+                        // Add an empty sublist that will be filled when the folder is clicked
+                        const nestedUl = document.createElement('ul');
+                        nestedUl.classList.add('nested');
+                        li.appendChild(nestedUl);
+
+                        // Set up event listener to fetch folder contents on click
+                        li.addEventListener('click', (event) => {
+                            event.stopPropagation(); // Prevent parent folders from toggling
+
+                            if (nestedUl.children.length === 0) {
+                                createFileTree(item.url, nestedUl);
+                            }
+                            nestedUl.style.display = nestedUl.style.display === 'block' ? 'none' : 'block';
+                        });
+                    } else if (item.type === 'file') { // If the item is a file
+                        const a = document.createElement('a');
+                        a.href = item.download_url; // Link to raw file on GitHub
+                        a.textContent = item.name;
+                        a.classList.add('file');
+                        li.appendChild(a);
+
+                        /*
+                                fetch("/pages-site/markdown.md")      // The path to the raw Markdown file
+            .then(response => response.blob())  // Unwrap to a blob...
+            .then(blob => blob.text())          // ...then to raw text...
+            .then(markdown => {                 // ...then pass the raw text into marked.parse
+                document.getElementById("content").innerHTML = marked.parse(markdown);
+            });
+                         */
+                    }
+
+                    ul.appendChild(li);
+                });
+
+                parentElement.appendChild(ul);
+            } else {
+                console.error('Error fetching directory contents:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching data from GitHub:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const fileTree = document.getElementById('fileTree');
+        createFileTree(apiUrl, fileTree);
+    });
+</script>
