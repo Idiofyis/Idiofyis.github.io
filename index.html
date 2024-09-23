@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html>
-    <body>
-    <h1>Idiofyis!</h1>
-    <h3>Programmer, Reverse Engineer, JVM God, Communist</h3>
-    <p><a href="library.html">Library</a>: Free books! </p>
-    <p><a href="blog.html">Blog</a>: Learn about the JVM, Reverse Engineering, or Marxism.</p>
-    <p><a href="projects.html">Projects</a>: Free tools which mainly target reverse engineering JVM programs.</p>
-    </body>
+<head>
+    <title>Idiofyis!</title>
+    <style>
+        body {
+            background-image: url("images/light_mode_home.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: black;
+        }
+
+        .dark-mode {
+            background-image: url("images/dark_mode_home.png");
+            color: white;
+        }
+
+        .mode-switch {
+            position: absolute;
+            bottom: 20px; /* Adjust this value to change distance from bottom */
+            left: 20px; /* Adjust this value to change distance from left */
+        }
+    </style>
+</head>
+<body>
+<h1>Idiofyis!</h1>
+<h3>Programmer, Reverse Engineer, JVM God, Communist</h3>
+<p><a href="library.html">Library</a>: Free books! </p>
+<p><a href="blog.html">Blog</a>: Learn about the JVM, Reverse Engineering, and Marxism.</p>
+<p><a href="projects.html">Projects</a>: Free tools which mainly target reverse engineering JVM programs.</p>
+
+<div class="mode-switch">
+    <label for="mode-switch">Theme:</label>
+    <select id="mode-switch" onchange="toggleMode()">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</div>
+
+<script>
+    function toggleMode() {
+        const body = document.body;
+        const modeSwitch = document.getElementById("mode-switch");
+
+        if (modeSwitch.value === "dark") {
+            body.classList.add("dark-mode");
+        } else {
+            body.classList.remove("dark-mode");
+        }
+    }
+</script>
+</body>
 </html>
