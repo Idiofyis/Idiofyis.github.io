@@ -40,19 +40,15 @@
     // Return the associated segment, eg if segmentIdentifier is "url" and content is "sha": "238unsd", "url": "www.example.com"
     // Then the function should return www.example.com
     function getSeg(content, segmentIdentifier) {
-        // Try parsing the content as JSON (assuming it's a simple JSON object)
         try {
             const jsonData = JSON.parse(content);
-            // Check if the segment identifier exists as a property
             if (jsonData.hasOwnProperty(segmentIdentifier)) {
                 return jsonData[segmentIdentifier];
             }
         } catch (error) {
-            // Handle parsing error (content might not be valid JSON)
             console.warn(`Error parsing content as JSON: ${error}`);
         }
 
-        // If parsing fails or identifier not found, return undefined
         return undefined;
     }
 
