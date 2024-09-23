@@ -34,10 +34,28 @@
 <ul id="fileTree"></ul>
 
 <script>
-    // GitHub API endpoint to fetch contents of the "library" folder
     const apiUrl = 'https://api.github.com/repos/Idiofyis/Library/contents/library';
 
-    // Function to create a file tree
+    // I HATE THIS FUCKING LANGUAGE WHAT BASTARD DECIDED ON TYPE ASSUMPTION?!?
+    // Return the associated segment, eg if segmentIdentifier is "url" and content is "sha": "238unsd", "url": "www.example.com"
+    // Then the function should return www.example.com
+    function getSeg(content, segmentIdentifier) {
+        // Try parsing the content as JSON (assuming it's a simple JSON object)
+        try {
+            const jsonData = JSON.parse(content);
+            // Check if the segment identifier exists as a property
+            if (jsonData.hasOwnProperty(segmentIdentifier)) {
+                return jsonData[segmentIdentifier];
+            }
+        } catch (error) {
+            // Handle parsing error (content might not be valid JSON)
+            console.warn(`Error parsing content as JSON: ${error}`);
+        }
+
+        // If parsing fails or identifier not found, return undefined
+        return undefined;
+    }
+
     async function createFileTree(url, parentElement) {
         try {
             const response = await fetch(url);
@@ -68,11 +86,31 @@
                             nestedUl.style.display = nestedUl.style.display === 'block' ? 'none' : 'block';
                         });
                     } else if (item.type === 'file') { // If the item is a file
+                        if (item.download_url.endsWith('.desc')) return;
+
                         const a = document.createElement('a');
                         a.href = item.download_url; // Link to raw file on GitHub
                         a.textContent = item.name;
                         a.classList.add('file');
                         li.appendChild(a);
+
+                        // Check for corresponding description file
+                        const descFile = item.url.replace('.pdf', '.desc');
+                        fetch(descFile)
+                            .then(response => response.text())
+                            .then(async description => {
+                                if (description) {
+                                    let raw = await fetch(getSeg(description, "download_url"))
+                                        .then(response => response.text());
+
+
+                                    // Append description after link
+                                    const descSpan = document.createElement('span');
+                                    descSpan.textContent = `: ${raw}`;
+                                    li.appendChild(descSpan);
+                                }
+                            })
+                            .catch(error => console.error(`Error fetching description for ${item.name}`, error));
                     }
 
                     ul.appendChild(li);
@@ -95,4 +133,3 @@
 </script>
 </body>
 </html>
-
