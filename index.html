@@ -4,42 +4,10 @@
     <title>Idiofyis!</title>
     <style>
         body {
-            background-image: url("images/light_mode_home.png");
+            background-image: url("images/Background.png");
             background-size: cover;
             background-repeat: no-repeat;
             color: black;
-        }
-
-        .dark-mode {
-            background-image: url("images/dark_mode_home.png");
-            color: white;
-        }
-
-        .mode-switch {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            z-index: 100;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .mode-switch:hover {
-            transform: scale(1.1);
-        }
-
-        .mode-switch.active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .mode-switch span {
-            color: white;
-            font-size: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
     </style>
 </head>
@@ -50,26 +18,5 @@
 <p><a href="essays.html">Essays</a>: Learn about programming, the JVM, Reverse Engineering, and Marxism.</p>
 <p><a href="projects.html">Projects</a>: Free tools which mainly target reverse engineering JVM programs.</p>
 
-<div class="mode-switch" onclick="toggleMode()">
-    <span id="mode-text">Dark</span>
-</div>
-
-<script>
-    function toggleMode() {
-        const body = document.body;
-        const modeSwitch = document.querySelector('.mode-switch');
-        const modeText = document.getElementById('mode-text');
-
-        modeSwitch.classList.toggle('active');
-
-        if (modeSwitch.classList.contains('active')) {
-            body.classList.add('dark-mode');
-            modeText.textContent = 'Light';
-        } else {
-            body.classList.remove('dark-mode');
-            modeText.textContent = 'Dark';
-        }
-    }
-</script>
 </body>
 </html>
