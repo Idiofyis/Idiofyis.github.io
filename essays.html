@@ -94,7 +94,7 @@
                                 const newDocument = newWindow.document;
 
                                 // Write the HTML content directly to the document
-                                newDocument.write(`<!DOCTYPE html><html><head><title>${item.name}</title></head><body><div id="content">${marked.parse(markdownText)}</div></body></html>`);
+                                newDocument.write(`<!DOCTYPE html><html><head><title>${item.name}</title><style>body {background-color: #f4f3f2;}</style></head><body><div id="content">${marked.parse(markdownText)}</div></body></html>`);
 
                                 // Close the document to ensure the content is rendered
                                 newDocument.close();
